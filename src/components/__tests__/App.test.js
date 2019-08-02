@@ -7,5 +7,7 @@ it('shows a comment box', () => {
 
   ReactDOM.render(<App />, div);
 
+  expect(div.innerHTML).toContain('CommentBox')
+
   ReactDOM.unmountComponentAtNode(div);
 })
