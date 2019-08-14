@@ -2,15 +2,35 @@ import React from 'react';
 import { mount } from 'enzyme';
 import Root from 'Root';
 import App from 'components/App';
+import moxios from 'moxios';
 
-it('can fetch a list of comments and display them', () => {
-  // Attempt to render the entire app
+beforeEach(() => {
+  moxios.install();
+  moxios.stubRequest('https://jsonplaceholder.typicode.com/comments', {
+    status: 200,
+    response: [{ name: 'Fetched #1' }, { name: 'Fetched #2' }]
+  });
+})
+
+afterEach(() => {
+  moxios.uninstall();
+})
+
+it('can fetch a list of comments and display them', (done) => {
   const wrapped = mount(
     <Root>
       <App />
     </Root>
-  )
-  // find the fetchCommnets button and click it
+  );
+  wrapped.find('[data-test="fetch-comments"]').simulate('click');
 
-  // expect to find a list of comments
+  setTimeout(() => {
+    wrapped.update();
+    
+    const result = wrapped.find('li').length;
+    expect(result).toEqual(2);
+
+    done();
+    wrapped.unmount();
+  }, 100);
 });
