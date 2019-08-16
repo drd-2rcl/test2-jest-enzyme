@@ -2,9 +2,25 @@ import React, { Component } from 'react';
 import { Route, Link } from 'react-router-dom'
 import CommentBox from './CommentBox';
 import CommentList from './CommentList';
+import { connect } from 'react-redux';
 
-export default class App extends Component {
-  renderButton = () => {}
+class App extends Component {
+  renderButton = () => {
+    const { auth } = this.props;
+    if (auth) {
+      return (
+        <button>
+          Sign Out
+        </button>
+      )
+    } else {
+      return (
+        <button>
+          Sign In
+        </button>
+      )
+    }
+  }
 
   renderHeader = () => {
     return (
@@ -23,6 +39,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
+      { this.renderHeader() }
         <Route path="/" exact component={CommentList} />
         <Route path="/post" component={CommentBox} />
       </div>
@@ -30,4 +47,9 @@ export default class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return { auth: state.auth };
+}
+
+
+export default connect(mapStateToProps)(App);
